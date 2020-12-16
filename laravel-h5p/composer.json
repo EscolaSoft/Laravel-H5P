@@ -1,0 +1,54 @@
+{
+  "name": "escolasoftdev/laravel-h5p",
+  "description": "H5P Plugin for laravel platform",
+  "type": "library",
+  "authors": [{
+      "name": "Alefe Souza",
+      "email": "contact@alefesouza.com"
+    },
+    {
+      "name": "Anass BOUTAKAOUA",
+      "email": "anass@itcours.com"
+    },
+    {
+      "name": "Abdelouahab Djoudi",
+      "email": "info@djoudi.net"
+    },
+    {
+      "name": "Mateusz Wojczal",
+      "email": "mateusz@escolasoft.com"
+    },
+  ],
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "EscolaSoft\\LaravelH5p\\": "src/LaravelH5p"
+    }
+  },
+  "require": {
+    "php": "^7.2",
+    "laravel/framework": "7.*",
+    "laravelcollective/html": ">=6.0.0",
+    "h5p/h5p-core": "^1.24.0",
+    "h5p/h5p-editor": "^1.24.0",
+    "guzzlehttp/guzzle": "^6.2"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "^1.8",
+    "mockery/mockery": "1.2.*",
+    "phpunit/phpunit": "~7.0",
+    "kitloong/laravel-migrations-generator": "^4.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "EscolaSoft\\LaravelH5p\\LaravelH5pServiceProvider"
+      ],
+      "aliases": {
+        "LaravelH5p": "EscolaSoft\\LaravelH5p\\Facades"
+      }
+    }
+  }
+}
