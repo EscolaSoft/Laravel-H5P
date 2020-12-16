@@ -7,7 +7,7 @@
 Require it in the Composer.
 
 ```bash
-composer require escolasoftdev/laravel-h5p
+composer require escolasoft/laravel-h5p
 ```
 
 Publish the Views, Config and so things.
