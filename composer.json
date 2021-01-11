@@ -35,8 +35,8 @@
     "php": "^7.2",
     "laravel/framework": "7.*",
     "laravelcollective/html": ">=6.0.0",
-    "h5p/h5p-core": "^1.24.0",
-    "h5p/h5p-editor": "^1.24.0",
+    "h5p/h5p-core": "dev-master",
+    "h5p/h5p-editor": "dev-master",
     "guzzlehttp/guzzle": ">=6"
   },
   "require-dev": {
