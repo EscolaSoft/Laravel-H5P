@@ -17,6 +17,10 @@
     {
       "name": "Mateusz Wojczal",
       "email": "mateusz@escolasoft.com"
+    },
+    {
+      "name": "Marcin Lenkowski",
+      "email": "Marcin.Lenkowski@escola.pl"
     }
   ],
   "license": "MIT",
@@ -33,7 +37,7 @@
     "laravelcollective/html": ">=6.0.0",
     "h5p/h5p-core": "^1.24.0",
     "h5p/h5p-editor": "^1.24.0",
-    "guzzlehttp/guzzle": "^6.2"
+    "guzzlehttp/guzzle": "^6"
   },
   "require-dev": {
     "fzaninotto/faker": "^1.8",
