@@ -61,7 +61,8 @@ class LaravelH5pServiceProvider extends \Illuminate\Support\ServiceProvider
             __DIR__.'/../../config/laravel-h5p.php' => config_path('laravel-h5p.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__.'/../../config/laravel-h5p.php', 'laravel-h5p'
+            __DIR__.'/../../config/laravel-h5p.php',
+            'laravel-h5p'
         );
 
         // language
@@ -91,16 +92,16 @@ class LaravelH5pServiceProvider extends \Illuminate\Support\ServiceProvider
         // h5p
         $this->publishes([
             __DIR__.'/../../assets'                        => public_path('assets/vendor/laravel-h5p'),
-            app_path('/../vendor/h5p/h5p-core/fonts')      => public_path('assets/vendor/h5p/h5p-core/fonts'),
-            app_path('/../vendor/h5p/h5p-core/images')     => public_path('assets/vendor/h5p/h5p-core/images'),
-            app_path('/../vendor/h5p/h5p-core/js')         => public_path('assets/vendor/h5p/h5p-core/js'),
-            app_path('/../vendor/h5p/h5p-core/styles')     => public_path('assets/vendor/h5p/h5p-core/styles'),
-            app_path('/../vendor/h5p/h5p-editor/ckeditor') => public_path('assets/vendor/h5p/h5p-editor/ckeditor'),
-            app_path('/../vendor/h5p/h5p-editor/images')   => public_path('assets/vendor/h5p/h5p-editor/images'),
-            app_path('/../vendor/h5p/h5p-editor/language') => public_path('assets/vendor/h5p/h5p-editor/language'),
-            app_path('/../vendor/h5p/h5p-editor/libs')     => public_path('assets/vendor/h5p/h5p-editor/libs'),
-            app_path('/../vendor/h5p/h5p-editor/scripts')  => public_path('assets/vendor/h5p/h5p-editor/scripts'),
-            app_path('/../vendor/h5p/h5p-editor/styles')   => public_path('assets/vendor/h5p/h5p-editor/styles'),
+            app_path('/../vendor/escolasoft/h5p-core/fonts')      => public_path('assets/vendor/h5p/h5p-core/fonts'),
+            app_path('/../vendor/escolasoft/h5p-core/images')     => public_path('assets/vendor/h5p/h5p-core/images'),
+            app_path('/../vendor/escolasoft/h5p-core/js')         => public_path('assets/vendor/h5p/h5p-core/js'),
+            app_path('/../vendor/escolasoft/h5p-core/styles')     => public_path('assets/vendor/h5p/h5p-core/styles'),
+            app_path('/../vendor/escolasoft/h5p-editor/ckeditor') => public_path('assets/vendor/h5p/h5p-editor/ckeditor'),
+            app_path('/../vendor/escolasoft/h5p-editor/images')   => public_path('assets/vendor/h5p/h5p-editor/images'),
+            app_path('/../vendor/escolasoft/h5p-editor/language') => public_path('assets/vendor/h5p/h5p-editor/language'),
+            app_path('/../vendor/escolasoft/h5p-editor/libs')     => public_path('assets/vendor/h5p/h5p-editor/libs'),
+            app_path('/../vendor/escolasoft/h5p-editor/scripts')  => public_path('assets/vendor/h5p/h5p-editor/scripts'),
+            app_path('/../vendor/escolasoft/h5p-editor/styles')   => public_path('assets/vendor/h5p/h5p-editor/styles'),
         ], 'public');
     }
 
