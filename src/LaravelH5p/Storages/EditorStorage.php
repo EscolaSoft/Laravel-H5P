@@ -40,12 +40,14 @@ class EditorStorage implements H5peditorStorage
     {
 //        $language = 'ja';
         // Load translation field from DB
-        $return = DB::select('SELECT hlt.translation FROM h5p_libraries_languages hlt
+        $return = DB::select(
+            'SELECT hlt.translation FROM h5p_libraries_languages hlt
            JOIN h5p_libraries hl ON hl.id = hlt.library_id
           WHERE hl.name = ?
             AND hl.major_version = ?
             AND hl.minor_version = ?
-            AND hlt.language_code = ?', [$machineName, $majorVersion, $minorVersion, $language]
+            AND hlt.language_code = ?',
+            [$machineName, $majorVersion, $minorVersion, $language]
         );
 
         return $return ? $return[0]->translation : null;
@@ -140,7 +142,7 @@ class EditorStorage implements H5peditorStorage
     public static function markFileForCleanup($file, $content_id)
     {
         $h5p = App::make('LaravelH5p');
-        $path = $h5p->get_h5p_storage();
+        $path = '';
         if (empty($content_id)) {
             // Should be in editor tmp folder
             $path .= '/editor';
@@ -154,10 +156,6 @@ class EditorStorage implements H5peditorStorage
         $path .= '/'.$file->getName();
 
         H5pTmpfile::create(['path' => $path, 'created_at' => time()]);
-        // Keep track of temporary files so they can be cleaned up later.
-        //        $wpdb->insert($wpdb->prefix . 'h5p_tmpfiles', array('path' => $path, 'created_at' => time()), array('%s', '%d'));
-        // Clear cached value for dirsize.
-        //        delete_transient('dirsize_cache');
     }
 
     public static function removeTemporarilySavedFiles($filePath)

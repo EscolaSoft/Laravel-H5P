@@ -11,6 +11,7 @@ use Log;
 use EscolaSoft\LaravelH5p\Eloquents\H5pLibrary;
 use EscolaSoft\LaravelH5p\Eloquents\H5pResult;
 use EscolaSoft\LaravelH5p\Eloquents\H5pContentsUserData;
+use EscolaSoft\LaravelH5p\Eloquents\H5pTmpfile;
 
 class AjaxController extends Controller
 {
@@ -91,12 +92,18 @@ class AjaxController extends Controller
         $editor->ajax->action(H5PEditorEndpoints::LIBRARY_UPLOAD, $request->get('_token'), $filePath, $request->get('contentId'));
     }
 
-    public function files(Request $request)
+    public function files(Request $request, $nonce = null)
     {
         $filePath = $request->file('file');
         $h5p = App::make('LaravelH5p');
         $editor = $h5p::$h5peditor;
         $editor->ajax->action(H5PEditorEndpoints::FILES, $request->get('_token'), $request->get('contentId'));
+
+
+        if ($nonce) {
+            $last = H5pTmpfile::orderBy('id', 'desc')->first();
+            $last->update([ 'nonce' => $nonce ]);
+        }
     }
 
     public function __invoke(Request $request)

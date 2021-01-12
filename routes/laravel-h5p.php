@@ -4,8 +4,6 @@ Route::prefix('admin/h5p')->group(function () {
         if (config('laravel-h5p.use_router') == 'EDITOR' || config('laravel-h5p.use_router') == 'ALL') {
             Route::resource('h5p', "EscolaSoft\LaravelH5p\Http\Controllers\H5pController");
             Route::group(['middleware' => ['auth']], function () {
-//            Route::get('h5p/export', 'EscolaSoft\LaravelH5p\Http\Controllers\H5pController@export')->name("h5p.export");
-
                 Route::get(
                     'library',
                     "EscolaSoft\LaravelH5p\Http\Controllers\LibraryController@index"
@@ -72,6 +70,13 @@ Route::prefix('admin/h5p')->group(function () {
                 'ajax/content-user-data',
                 'EscolaSoft\LaravelH5p\Http\Controllers\AjaxController@contentUserData'
             )->name('h5p.ajax.content-user-data');
+
+
+            //nonce
+            Route::match(['GET', 'POST'], 'ajax/{nonce}/libraries', 'EscolaSoft\LaravelH5p\Http\Controllers\AjaxController@libraries');
+            Route::post('ajax/{nonce}/files', 'EscolaSoft\LaravelH5p\Http\Controllers\AjaxController@files');
+            Route::get('ajax/{nonce}/libraries', 'EscolaSoft\LaravelH5p\Http\Controllers\AjaxController@libraries');
+            Route::get('ajax/{nonce}/single-libraries', 'EscolaSoft\LaravelH5p\Http\Controllers\AjaxController@singleLibrary');
         }
 
         // export
@@ -81,3 +86,5 @@ Route::prefix('admin/h5p')->group(function () {
 //    }
     });
 });
+
+Route::get('h5p/embed/{id}', 'EscolaSoft\LaravelH5p\Http\Controllers\EmbedController')->name('h5p.embed.client');

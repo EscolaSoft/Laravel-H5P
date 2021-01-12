@@ -16,6 +16,7 @@ class CreateH5pTmpfilesTable extends Migration
         Schema::create('h5p_tmpfiles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('path');
+            $table->string('nonce', 8)->nullable();
             $table->timestamps();
             $table->index(['created_at'], 'created_at');
         });

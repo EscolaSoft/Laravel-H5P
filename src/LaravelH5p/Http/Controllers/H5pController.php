@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use EscolaSoft\LaravelH5p\Exceptions\H5PException;
 use Response;
+use EscolaSoft\LaravelH5p\Eloquents\H5pTmpfile;
 
 class H5pController extends Controller
 {
@@ -51,12 +52,17 @@ class H5pController extends Controller
         // view Get the file and settings to print from
         $settings = $h5p::get_editor();
 
+        $nonce = bin2hex(random_bytes(4));
+
+        $settings['editor']['ajaxPath'] .= $nonce .'/';
+
         // create event dispatch
         event(new H5pEvent('content', 'new'));
 
         $user = Auth::user();
 
-        return view('h5p.content.create', compact('settings', 'user', 'library', 'parameters', 'display_options'));
+
+        return view('h5p.content.create', compact('settings', 'user', 'library', 'parameters', 'display_options', 'nonce'));
     }
 
     public function store(Request $request)
@@ -96,11 +102,7 @@ class H5pController extends Controller
                 if (!$content['library']['libraryId']) {
                     throw new H5PException('No such library');
                 }
-                //old
-                // $content['params'] = $request->get('parameters');
-                // $params = json_decode($content['params']);
 
-                //new
                 $params = json_decode($request->get('parameters'));
                 if (!empty($params->metadata) && !empty($params->metadata->title)) {
                     $content['title'] = $params->metadata->title;
@@ -124,6 +126,8 @@ class H5pController extends Controller
                 event(new H5pEvent('content', $event_type, $content['id'], $content['title'], $content['library']['machineName'], $content['library']['majorVersion'], $content['library']['minorVersion']));
 
                 $return_id = $content['id'];
+
+                $this->handle_upload_nonce($request->get('nonce'), $return_id);
             } elseif ($request->get('action') === 'upload') {
                 $content['uploaded'] = true;
 
@@ -334,6 +338,23 @@ class H5pController extends Controller
             H5PCore::DISPLAY_OPTION_COPYRIGHT => filter_input(INPUT_POST, 'copyright', FILTER_VALIDATE_BOOLEAN),
         ];
         $content['disable'] = $core->getStorableDisplayOptions($set, $content['disable']);
+    }
+
+    private function handle_upload_nonce($nonce, $contentId)
+    {
+        $files = H5pTmpfile::where('nonce', $nonce)->get();
+        foreach ($files as $file) {
+            if (strpos($file->path, 'editor') !== false) {
+                $destFile = str_replace("/editor/", "/content/$contentId/", $file->path);
+                $destPath = storage_path('app/public/h5p'. $destFile);
+                $destDir = dirname($destPath);
+                if (!is_dir($destDir)) {
+                    mkdir($destDir, 0777, true);
+                }
+                rename(storage_path('app/public/h5p'.$file->path), $destPath);
+                $file->delete();
+            }
+        }
     }
 
     private function handle_upload($content = null, $only_upgrade = null, $disable_h5p_security = false)

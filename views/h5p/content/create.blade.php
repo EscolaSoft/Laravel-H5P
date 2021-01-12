@@ -10,7 +10,9 @@
             {!! Form::open(['route' => ['h5p.store'], 'class'=>'form-horizontal', 'enctype'=>"multipart/form-data", 'id'=>'laravel-h5p-form']) !!}
             <input type="hidden" name="library" id="laravel-h5p-library" value="{{ $library }}">
             <input type="hidden" name="parameters" id="laravel-h5p-parameters" value="{{ $parameters }}">
-            
+            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+            <input type="hidden" name="nonce" value="{{ $nonce }}">
+
             <fieldset>
 
                 <div id="laravel-h5p-create" class="form-group {{ $errors->has('parameters') ? 'has-error' : '' }}">
@@ -20,7 +22,7 @@
                             <div id="laravel-h5p-editor">{{ trans('laravel-h5p.content.loading_content') }}</div>
                         </div>
 
-                        @if ($errors->has('parameters'))                 
+                        @if ($errors->has('parameters'))
                         <span class="help-block">
                             {{ $errors->first('parameters') }}
                         </span>
@@ -48,7 +50,7 @@
                         @endif
                     </div>
                 </div>
-{{-- 
+{{--
                 <div class="form-group {{ $errors->has('action') ? 'has-error' : '' }}">
                     <label for="inputAction" class="control-label col-md-3">{{ trans('laravel-h5p.content.action') }}</label>
                     <div class="col-md-6">
@@ -59,7 +61,7 @@
                         <label class="radio-inline d-none">
                             <input type="radio" name="action" value="create" class="laravel-h5p-type" checked="checked"/>{{ trans('laravel-h5p.content.action_create') }}
                         </label>
-{{-- 
+{{--
 
                         @if ($errors->has('action'))
                         <span class="help-block">
@@ -142,8 +144,8 @@
 
                 </div>
                 @endif
-                
-                
+
+
                 <div class="form-group">
                 <div class="d-flex justify-content-between w-100">
                     <div></div>
@@ -166,7 +168,7 @@
             </fieldset>
 
 
-            
+
 
             {!! Form::close() !!}
 
