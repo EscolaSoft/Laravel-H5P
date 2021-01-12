@@ -45,7 +45,7 @@ Link files
 
 ```
 cd public/assets/vendor/h5p
-ln -s ../../../../storage/app/public/h5p/libraries
+ln -s public/assets/vendor/h5p ../../../../storage/app/public/h5p/libraries
 ```
 
 You probably will need to add it to your `app/Http/Middleware/VerifyCsrfToken.php` due to H5P ajax requests without Laravel CSRF token:

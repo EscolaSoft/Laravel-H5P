@@ -55,6 +55,8 @@ class H5pController extends Controller
         $nonce = bin2hex(random_bytes(4));
 
         $settings['editor']['ajaxPath'] .= $nonce .'/';
+        $settings['editor']['filesPath'] = asset('storage/h5p/editor');
+
 
         // create event dispatch
         event(new H5pEvent('content', 'new'));
@@ -179,6 +181,10 @@ class H5pController extends Controller
 
         // view Get the file and settings to print from
         $settings = $h5p::get_editor($content);
+
+        $settings['editor']['filesPath'] = asset('storage/h5p/content/'. $content['id']);
+
+        // http://localhost:1000/storage/h5p/content/3/images/background-5fedd8eddcb4a.jpg
 
         // create event dispatch
         event(new H5pEvent('content', 'edit', $content['id'], $content['title'], $content['library']['name'], $content['library']['majorVersion'].'.'.$content['library']['minorVersion']));
