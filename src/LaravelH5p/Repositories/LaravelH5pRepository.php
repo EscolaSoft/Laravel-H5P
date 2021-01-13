@@ -691,12 +691,9 @@ class LaravelH5pRepository implements H5PFrameworkInterface
         JOIN h5p_libraries hl ON hl.id = hc.library_id
         WHERE hc.id = ?', [$id]);
 
-
-
-        // dd($return[0]);
-        // die('chuj');
-
-        $return[0]->metadata = 'aaa';
+        if (isset($return) && isset($return[0])) {
+            $return[0]->metadata = 'aaa';
+        }
 
         return (array) array_shift($return);
     }
