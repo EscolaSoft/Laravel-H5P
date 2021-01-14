@@ -26,6 +26,7 @@ use GuzzleHttp\Client;
 use H5PFrameworkInterface;
 use H5PPermission;
 use Illuminate\Support\Facades\App;
+use PDO;
 
 class LaravelH5pRepository implements H5PFrameworkInterface
 {
@@ -382,13 +383,25 @@ class LaravelH5pRepository implements H5PFrameworkInterface
      */
     public function saveLibraryDependencies($id, $dependencies, $dependencyType)
     {
-        foreach ($dependencies as $dependency) {
-            DB::insert('INSERT INTO h5p_libraries_libraries (library_id, required_library_id, dependency_type)
+        $dbDriver = DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($dbDriver === 'pgsql') {
+            foreach ($dependencies as $dependency) {
+                DB::insert('INSERT INTO h5p_libraries_libraries (library_id, required_library_id, dependency_type)
             SELECT ?, hl.id, ? FROM h5p_libraries hl WHERE
             name = ?
             AND major_version = ?
             AND minor_version = ?
-            ON DUPLICATE KEY UPDATE dependency_type = ?', [$id, $dependencyType, $dependency['machineName'], $dependency['majorVersion'], $dependency['minorVersion'], $dependencyType]);
+            ON CONFLICT (library_id, required_library_id) DO UPDATE SET dependency_type = ?', [$id, $dependencyType, $dependency['machineName'], $dependency['majorVersion'], $dependency['minorVersion'], $dependencyType]);
+            }
+        } else {
+            foreach ($dependencies as $dependency) {
+                DB::insert('INSERT INTO h5p_libraries_libraries (library_id, required_library_id, dependency_type)
+                SELECT ?, hl.id, ? FROM h5p_libraries hl WHERE
+                name = ?
+                AND major_version = ?
+                AND minor_version = ?
+                ON DUPLICATE KEY UPDATE dependency_type = ?', [$id, $dependencyType, $dependency['machineName'], $dependency['majorVersion'], $dependency['minorVersion'], $dependencyType]);
+            }
         }
 
 //        DB::table('h5p_libraries_libraries')->insert($datas);
