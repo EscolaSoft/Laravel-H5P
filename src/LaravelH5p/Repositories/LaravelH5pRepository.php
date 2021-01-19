@@ -574,6 +574,8 @@ class LaravelH5pRepository implements H5PFrameworkInterface
                 $this->allLibraries = DB::table('h5p_libraries')
                     ->select(['id as libraryId', 'name as machineName', 'title', 'major_version as majorVersion', 'minor_version as minorVersion', 'patch_version as patchVersion', 'embed_types as embedTypes', 'preloaded_js as preloadedJs', 'preloaded_css as preloadedCss', 'drop_library_css as dropLibraryCss', 'fullscreen', 'runnable', 'semantics', 'has_icon as hasIcon'])
                     ->get();
+
+                self::fixCaseKeysArray(['libraryId', 'machineName', 'majorVersion', 'minorVersion', 'patchVersion', 'embedTypes', 'preloadedJs', 'preloadedCss', 'dropLibraryCss', 'hasIcon'], $this->allLibraries);
             }
 
             $library = $this->allLibraries->filter(function ($val) use ($name, $majorVersion, $minorVersion) {
@@ -588,6 +590,8 @@ class LaravelH5pRepository implements H5PFrameworkInterface
                 ->where('major_version', $majorVersion)
                 ->where('minor_version', $minorVersion)
                 ->first();
+
+            self::fixCaseKeysArray(['libraryId', 'machineName', 'majorVersion', 'minorVersion', 'patchVersion', 'embedTypes', 'preloadedJs', 'preloadedCss', 'dropLibraryCss', 'hasIcon'], $library);
         }
 
         $return = json_decode(json_encode($library), true);
@@ -597,6 +601,7 @@ class LaravelH5pRepository implements H5PFrameworkInterface
                 $this->allDependencies = collect(json_decode(json_encode(DB::select('SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType, hll.library_id as libraryId
                 FROM h5p_libraries_libraries hll
                 JOIN h5p_libraries hl ON hll.required_library_id = hl.id'))));
+                self::fixCaseKeysArray([ 'machineName', 'majorVersion', 'minorVersion', 'dependencyType', 'libraryId'], $this->allDependencies);
             }
 
             $dependencies = $this->allDependencies->filter(function ($val) use ($library) {
@@ -607,6 +612,8 @@ class LaravelH5pRepository implements H5PFrameworkInterface
             FROM h5p_libraries_libraries hll
             JOIN h5p_libraries hl ON hll.required_library_id = hl.id
             WHERE hll.library_id = ?', [$library->libraryId]);
+
+            self::fixCaseKeysArray([ 'machineName', 'majorVersion', 'minorVersion', 'dependencyType'], $dependencies);
         }
 
         foreach ($dependencies as $dependency) {
@@ -680,6 +687,34 @@ class LaravelH5pRepository implements H5PFrameworkInterface
         //        do_action_ref_array('h5p_alter_library_semantics', array(&$semantics, $name, $majorVersion, $minorVersion));
     }
 
+    public static function fixCaseKeysArray($keys, $array)
+    {
+        if (is_object($array)) {
+            $row = $array;
+            foreach ($keys as $key) {
+                $lckey = strtolower($key);
+                if (is_array($row) && !isset($row[$key]) && isset($row[$lckey])) {
+                    $row[$key] = $row[$lckey];
+                }
+                if (is_object($row) && !isset($row->$key) && isset($row->$lckey)) {
+                    $row->$key = $row->$lckey;
+                }
+            }
+        } else {
+            foreach ($array as $row_key => $row) {
+                foreach ($keys as $key) {
+                    $lckey = strtolower($key);
+                    if (is_array($row) && !isset($row[$key]) && isset($row[$lckey])) {
+                        $row[$key] = $row[$lckey];
+                    }
+                    if (is_object($row) && !isset($row->$key) && isset($row->$lckey)) {
+                        $row->$key = $row->$lckey;
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Implements loadContent.
      */
@@ -704,8 +739,10 @@ class LaravelH5pRepository implements H5PFrameworkInterface
         JOIN h5p_libraries hl ON hl.id = hc.library_id
         WHERE hc.id = ?', [$id]);
 
+        self::fixCaseKeysArray(['embedType', 'libraryName', 'libraryId', 'libraryMajorVersion', 'libraryMinorVersion', 'libraryEmbedTypes', 'libraryFullscreen'], $return);
+
         if (isset($return) && isset($return[0])) {
-            $return[0]->metadata = 'aaa';
+            $return[0]->metadata = '';
         }
 
         return (array) array_shift($return);
@@ -729,6 +766,9 @@ class LaravelH5pRepository implements H5PFrameworkInterface
         JOIN h5p_libraries hl ON hcl.library_id = hl.id
         WHERE hcl.content_id = ?';
 
+
+
+
         $queryArgs = [$id];
         if ($type !== null) {
             $query .= ' AND hcl.dependency_type = ?';
@@ -737,6 +777,11 @@ class LaravelH5pRepository implements H5PFrameworkInterface
         $query .= ' ORDER BY hcl.weight';
 
         $entrys = DB::select($query, $queryArgs);
+
+        self::fixCaseKeysArray(['machineName', 'majorVersion', 'minorVersion', 'patchVersion', 'preloadedCss', 'preloadedJs', 'dropCss', 'dependencyType'], $entrys);
+
+
+
         $return = [];
         foreach ($entrys as $entry) {
             $return[] = (array) $entry;
