@@ -17,6 +17,7 @@ use DB;
 use EscolaSoft\LaravelH5p\Eloquents\H5pLibrary;
 use EscolaSoft\LaravelH5p\Eloquents\H5pTmpfile;
 use H5peditorStorage;
+use EscolaSoft\LaravelH5p\Repositories\LaravelH5pRepository;
 
 /**
  * Description of H5pStorage.
@@ -105,6 +106,9 @@ class EditorStorage implements H5peditorStorage
                 ->whereNotNull('semantics')
                 ->orderBy('name', 'ASC')
                 ->get();
+
+            LaravelH5pRepository::fixCaseKeysArray(['majorVersion', 'minorVersion', 'patchVersion'], $libraries_result);
+
 
             // 모든 버전의 라리브러리가 로드되므로 하나의 가장 최신 라이브러리를 찾는 부분
             foreach ($libraries_result as $library) {
