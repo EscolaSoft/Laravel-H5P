@@ -3,9 +3,9 @@
     "description": "H5P Plugin for laravel platform",
     "type": "library",
     "authors": [{
-            "name": "Alefe Souza",
-            "email": "contact@alefesouza.com"
-        },
+        "name": "Alefe Souza",
+        "email": "contact@alefesouza.com"
+    },
         {
             "name": "Anass BOUTAKAOUA",
             "email": "anass@itcours.com"
@@ -32,9 +32,9 @@
         }
     },
     "require": {
-        "php": "^7.2",
-        "laravel/framework": "7.*",
-        "laravelcollective/html": ">=6.0.0",
+        "php": "^7.4",
+        "laravel/framework": "8.*",
+        "laravelcollective/html": ">=6.2",
         "escolasoft/h5p-core": "dev-master",
         "escolasoft/h5p-editor": "dev-master",
         "guzzlehttp/guzzle": ">=6"
@@ -42,7 +42,7 @@
     "require-dev": {
         "fzaninotto/faker": "^1.8",
         "mockery/mockery": "1.2.*",
-        "phpunit/phpunit": "~7.0",
+        "phpunit/phpunit": "~9.0",
         "kitloong/laravel-migrations-generator": "^4.0"
     },
     "extra": {
