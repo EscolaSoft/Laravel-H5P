@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use EscolaSoft\LaravelH5p\Eloquents\H5pContent;
 use EscolaSoft\LaravelH5p\Events\H5pEvent;
 use H5pCore;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -18,13 +19,17 @@ class H5pController extends Controller
     public function index(Request $request)
     {
         $where = H5pContent::orderBy('h5p_contents.id', 'desc');
-
-        if ($request->query('sf') && $request->query('s')) {
+        $querySearch = $request->query('s');
+        
+        if ($request->query('sf') && $querySearch) {
             if ($request->query('sf') == 'title') {
-                $where->where('h5p_contents.title', $request->query('s'));
+                $where->where('h5p_contents.title', 'ilike', "%$querySearch%");
             }
             if ($request->query('sf') == 'creator') {
-                $where->leftJoin('users', 'users.id', 'h5p_contents.user_id')->where('users.name', 'like', '%'.$request->query('s').'%');
+                $where->leftJoin('users', 'users.id', 'h5p_contents.user_id')->where(function (Builder $query) use ($querySearch) {
+                    $query->where('users.first_name', 'ilike', "%$querySearch%");
+                    $query->orWhere('users.last_name', 'ilike', "%$querySearch%");
+                });
             }
         }
 
@@ -33,7 +38,7 @@ class H5pController extends Controller
             'creator' => trans('laravel-h5p.content.creator'),
         ];
         $entrys = $where->paginate(10);
-        $entrys->appends(['sf' => $request->query('sf'), 's' => $request->query('s')]);
+        $entrys->appends(['sf' => $request->query('sf'), 's' => $querySearch]);
 
         return view('h5p.content.index', compact('entrys', 'request', 'search_fields'));
     }
