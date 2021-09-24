@@ -381,7 +381,8 @@ class H5pController extends Controller
 
         $skipContent = ($content === null);
 
-        if ($validator->isValidPackage($skipContent, $only_upgrade) && ($skipContent || $content['title'] ?? '' !== null)) {
+        $content['title'] = $content['title'] ?? 'Example title';
+        if ($validator->isValidPackage($skipContent, $only_upgrade) && !$skipContent) {
             if (function_exists('check_upload_size')) {
                 // Check file sizes before continuing!
                 $tmpDir = $interface->getUploadedH5pFolderPath();
