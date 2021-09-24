@@ -24,12 +24,12 @@ class H5pController extends Controller
                 $where->where('h5p_contents.title', $request->query('s'));
             }
             if ($request->query('sf') == 'creator') {
-                $where->leftJoin('users', 'users.id', 'h5p_contents.user_id')->where('users.name', 'like', '%'.$request->query('s').'%');
+                $where->leftJoin('users', 'users.id', 'h5p_contents.user_id')->where('users.name', 'like', '%' . $request->query('s') . '%');
             }
         }
 
         $search_fields = [
-            'title'   => trans('laravel-h5p.content.title'),
+            'title' => trans('laravel-h5p.content.title'),
             'creator' => trans('laravel-h5p.content.creator'),
         ];
         $entrys = $where->paginate(10);
@@ -54,7 +54,7 @@ class H5pController extends Controller
 
         $nonce = bin2hex(random_bytes(4));
 
-        $settings['editor']['ajaxPath'] .= $nonce .'/';
+        $settings['editor']['ajaxPath'] .= $nonce . '/';
         $settings['editor']['filesPath'] = asset('storage/h5p/editor');
 
 
@@ -83,11 +83,11 @@ class H5pController extends Controller
         $oldParams = null;
         $event_type = 'create';
         $content = [
-            'disable'    => H5PCore::DISABLE_NONE,
-            'user_id'    => Auth::id(),
+            'disable' => H5PCore::DISABLE_NONE,
+            'user_id' => Auth::id(),
             'embed_type' => 'div',
-            'filtered'   => '',
-            'slug'       => config('laravel-h5p.slug'),
+            'filtered' => '',
+            'slug' => config('laravel-h5p.slug'),
         ];
 
         $content['filtered'] = '';
@@ -182,12 +182,12 @@ class H5pController extends Controller
         // view Get the file and settings to print from
         $settings = $h5p::get_editor($content);
 
-        $settings['editor']['filesPath'] = asset('storage/h5p/content/'. $content['id']);
+        $settings['editor']['filesPath'] = asset('storage/h5p/content/' . $content['id']);
 
         // http://localhost:1000/storage/h5p/content/3/images/background-5fedd8eddcb4a.jpg
 
         // create event dispatch
-        event(new H5pEvent('content', 'edit', $content['id'], $content['title'], $content['library']['name'], $content['library']['majorVersion'].'.'.$content['library']['minorVersion']));
+        event(new H5pEvent('content', 'edit', $content['id'], $content['title'], $content['library']['name'], $content['library']['majorVersion'] . '.' . $content['library']['minorVersion']));
 
         $user = Auth::user();
 
@@ -317,9 +317,9 @@ class H5pController extends Controller
 
         return Response::json([
             'success' => true,
-            'data'    => [
-                'settings'=>$settings,
-                'embed'=>$embed,
+            'data' => [
+                'settings' => $settings,
+                'embed' => $embed,
             ],
             'message' => 'h5p fetched succesfuly',
         ]);
@@ -338,9 +338,9 @@ class H5pController extends Controller
     private function get_disabled_content_features($core, &$content)
     {
         $set = [
-            H5PCore::DISPLAY_OPTION_FRAME     => filter_input(INPUT_POST, 'frame', FILTER_VALIDATE_BOOLEAN),
-            H5PCore::DISPLAY_OPTION_DOWNLOAD  => filter_input(INPUT_POST, 'download', FILTER_VALIDATE_BOOLEAN),
-            H5PCore::DISPLAY_OPTION_EMBED     => filter_input(INPUT_POST, 'embed', FILTER_VALIDATE_BOOLEAN),
+            H5PCore::DISPLAY_OPTION_FRAME => filter_input(INPUT_POST, 'frame', FILTER_VALIDATE_BOOLEAN),
+            H5PCore::DISPLAY_OPTION_DOWNLOAD => filter_input(INPUT_POST, 'download', FILTER_VALIDATE_BOOLEAN),
+            H5PCore::DISPLAY_OPTION_EMBED => filter_input(INPUT_POST, 'embed', FILTER_VALIDATE_BOOLEAN),
             H5PCore::DISPLAY_OPTION_COPYRIGHT => filter_input(INPUT_POST, 'copyright', FILTER_VALIDATE_BOOLEAN),
         ];
         $content['disable'] = $core->getStorableDisplayOptions($set, $content['disable']);
@@ -352,12 +352,12 @@ class H5pController extends Controller
         foreach ($files as $file) {
             if (strpos($file->path, 'editor') !== false) {
                 $destFile = str_replace("/editor/", "/content/$contentId/", $file->path);
-                $destPath = storage_path('app/public/h5p'. $destFile);
+                $destPath = storage_path('app/public/h5p' . $destFile);
                 $destDir = dirname($destPath);
                 if (!is_dir($destDir)) {
                     mkdir($destDir, 0777, true);
                 }
-                rename(storage_path('app/public/h5p'.$file->path), $destPath);
+                rename(storage_path('app/public/h5p' . $file->path), $destPath);
                 $file->delete();
             }
         }
@@ -381,7 +381,7 @@ class H5pController extends Controller
 
         $skipContent = ($content === null);
 
-        if ($validator->isValidPackage($skipContent, $only_upgrade) && ($skipContent || $content['title'] !== null)) {
+        if ($validator->isValidPackage($skipContent, $only_upgrade) && ($skipContent || $content['title'] ?? '' !== null)) {
             if (function_exists('check_upload_size')) {
                 // Check file sizes before continuing!
                 $tmpDir = $interface->getUploadedH5pFolderPath();
