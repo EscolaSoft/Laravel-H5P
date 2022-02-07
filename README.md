@@ -1,5 +1,7 @@
 # H5P Plugin for Laravel Framework
 
+This package is archived, work is moved into part of [Wells Escola LMS](https://github.com/EscolaLMS/H5P). 
+
 Require it in the Composer.
 
 ```bash
